@@ -4,9 +4,11 @@ export interface Recipe {
   title: string;
   ingredients: string[];
   instructions: string;
-  image?: string;
+  coverImage?: string;
+  images?: string[];
   tags: string[];
   difficulty: 'Quickie' | 'Gourmet' | 'Comfort Food';
+  isFavorite?: boolean;
   createdAt: string;
 }
 

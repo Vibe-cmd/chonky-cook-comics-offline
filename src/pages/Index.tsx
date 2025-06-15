@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,6 +44,16 @@ const Index = () => {
       title: "KAPOW! Recipe Deleted! 🗑️",
       description: "Recipe removed from your collection!",
     });
+  };
+
+  const handleToggleFavorite = (id: string) => {
+    const recipe = recipes.find(r => r.id === id);
+    if (recipe) {
+      recipeStorage.updateRecipe(id, { isFavorite: !recipe.isFavorite });
+      setRecipes(prev => prev.map(r => 
+        r.id === id ? { ...r, isFavorite: !r.isFavorite } : r
+      ));
+    }
   };
 
   const filteredRecipes = recipes.filter(recipe =>
@@ -112,7 +121,6 @@ const Index = () => {
           <h1 className="text-5xl font-black text-white mb-2 transform -rotate-2 drop-shadow-lg">
             ChonkyChonks
           </h1>
-          <p className="text-xl text-white font-bold">My Personalized Comic Recipe Vault!</p>
           <div className="mt-4 inline-block bg-white text-black px-4 py-2 rounded-full font-bold transform rotate-1">
             💥 {recipes.length} Epic Recipes! 💥
           </div>
@@ -140,13 +148,15 @@ const Index = () => {
                   Add Recipe
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl border-4 border-black rounded-xl" style={{ backgroundColor: '#EFDFBB' }}>
+              <DialogContent className="max-w-2xl max-h-[90vh] border-4 border-black rounded-xl overflow-hidden" style={{ backgroundColor: '#EFDFBB' }}>
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-black text-center transform -rotate-1">
                     🍳 Create Epic Recipe! 🍳
                   </DialogTitle>
                 </DialogHeader>
-                <AddRecipeForm onSubmit={handleAddRecipe} />
+                <div className="overflow-y-auto max-h-[80vh] pr-2">
+                  <AddRecipeForm onSubmit={handleAddRecipe} />
+                </div>
               </DialogContent>
             </Dialog>
 
@@ -194,6 +204,7 @@ const Index = () => {
                   setSelectedRecipe(recipe);
                   setIsDetailsOpen(true);
                 }}
+                onToggleFavorite={() => handleToggleFavorite(recipe.id)}
               />
             ))}
           </div>
@@ -202,13 +213,15 @@ const Index = () => {
 
       {/* Recipe Details Dialog */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto border-4 border-black rounded-xl" style={{ backgroundColor: '#EFDFBB' }}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden border-4 border-black rounded-xl" style={{ backgroundColor: '#EFDFBB' }}>
           {selectedRecipe && (
-            <RecipeDetails
-              recipe={selectedRecipe}
-              onDelete={() => handleDeleteRecipe(selectedRecipe.id)}
-              onClose={() => setIsDetailsOpen(false)}
-            />
+            <div className="overflow-y-auto max-h-[85vh] pr-2">
+              <RecipeDetails
+                recipe={selectedRecipe}
+                onDelete={() => handleDeleteRecipe(selectedRecipe.id)}
+                onClose={() => setIsDetailsOpen(false)}
+              />
+            </div>
           )}
         </DialogContent>
       </Dialog>

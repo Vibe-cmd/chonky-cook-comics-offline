@@ -1,14 +1,15 @@
 
 import React from 'react';
 import { Recipe } from '@/utils/recipeStorage';
-import { Clock, Tag } from 'lucide-react';
+import { Clock, Tag, Heart } from 'lucide-react';
 
 interface RecipeCardProps {
   recipe: Recipe;
   onClick: () => void;
+  onToggleFavorite: () => void;
 }
 
-const RecipeCard = ({ recipe, onClick }: RecipeCardProps) => {
+const RecipeCard = ({ recipe, onClick, onToggleFavorite }: RecipeCardProps) => {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Quickie': return 'bg-green-400';
@@ -27,15 +28,31 @@ const RecipeCard = ({ recipe, onClick }: RecipeCardProps) => {
     }
   };
 
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleFavorite();
+  };
+
   return (
     <div
       onClick={onClick}
-      className="bg-white border-4 border-black rounded-xl p-4 cursor-pointer transform hover:scale-105 hover:rotate-1 transition-all duration-200 shadow-lg hover:shadow-xl"
+      className="bg-white border-4 border-black rounded-xl p-4 cursor-pointer transform hover:scale-105 hover:rotate-1 transition-all duration-200 shadow-lg hover:shadow-xl relative"
     >
-      {/* Recipe Image Placeholder */}
-      <div className="h-40 bg-gradient-to-br from-yellow-200 to-orange-300 rounded-lg mb-4 flex items-center justify-center border-2 border-black">
-        {recipe.image ? (
-          <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover rounded-lg" />
+      {/* Favorite Heart */}
+      <button
+        onClick={handleFavoriteClick}
+        className="absolute top-2 right-2 z-10 p-2 rounded-full bg-white border-2 border-black shadow-lg hover:scale-110 transition-transform"
+      >
+        <Heart
+          size={20}
+          className={recipe.isFavorite ? 'text-red-500 fill-red-500' : 'text-gray-400'}
+        />
+      </button>
+
+      {/* Recipe Image */}
+      <div className="h-40 bg-gradient-to-br from-yellow-200 to-orange-300 rounded-lg mb-4 flex items-center justify-center border-2 border-black overflow-hidden">
+        {recipe.coverImage ? (
+          <img src={recipe.coverImage} alt={recipe.title} className="w-full h-full object-cover rounded-lg" />
         ) : (
           <div className="text-6xl">🍽️</div>
         )}
